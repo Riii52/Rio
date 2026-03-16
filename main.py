@@ -90,7 +90,7 @@ async def toonrank(ctx, m: discord.Member = None):
     e.set_image(url=GIF_URL)
     await ctx.send(embed=e)
 
-@bot.command(name='Toptoons', aliases=['tt', 'TT'])
+@bot.command(name='Toptoons', aliases=['tt', 'TT!'])
 async def toptoons(ctx):
     data = load_data()
     sd = sorted(data.items(), key=lambda x: x[1].get('runs', 0), reverse=True)[:10]
