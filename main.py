@@ -314,9 +314,10 @@ async def send_ticket(ctx):
     file = discord.File('ticket.gif', filename='ticket.gif')
     embed.set_image(url='attachment://ticket.gif')
 
-    await target.send(file=file, embed=embed)
-    @bot.command(name="top10")
-async def leaderboard(ctx):
+
+    await target.send(file=file, embed=embed) 
+@bot.command(name="showtop")
+async def show_leaderboard_rank(ctx):
     try:
         rankings = sorted(levels.items(), key=lambda x: x[1]['xp'], reverse=True)
         embed = discord.Embed(title="🏆 قائمة توب 10", color=discord.Color.gold())
