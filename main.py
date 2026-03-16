@@ -315,39 +315,24 @@ async def send_ticket(ctx):
     embed.set_image(url='attachment://ticket.gif')
 
     await target.send(file=file, embed=embed)
-@bot.command()
-async def top(ctx):
-    # افترضنا هنا أن بياناتك مخزنة في متغير اسمه levels
-    # بحيث يكون: levels[user_id] = {'xp': 100, 'level': 5}
-    
-    # ترتيب الأعضاء بناءً على الـ XP من الأعلى للأقل
-    rankings = sorted(levels.items(), key=lambda x: x[1]['xp'], reverse=True)
-    
-    embed = discord.Embed(
-        title="🏆 قائمة توب 10 المتفاعلين",
-        description="أكثر الأعضاء تفاعلاً في السيرفر:",
-        color=discord.Color.gold()
-    )
-    
-    count = 1
-    for user_id, data in rankings[:10]: # يأخذ أول 10 فقط
-        try:
-            user = await bot.fetch_user(int(user_id))
-            user_name = user.name
-        except:
-            user_name = "عضو غادر"
-            
-        embed.add_field(
-            name=f"#{count} | {user_name}",
-            value=f"اللفل: `{data['level']}` | XP: `{data['xp']}`",
-            inline=False
-        )
-        count += 1
-        
-    embed.set_footer(text=f"طلب بواسطة {ctx.author.name}", icon_url=ctx.author.avatar.url)
-    
-    await ctx.send(embed=embed)
-@bot.command(name="top10") # هنا سمينا الأمر top10
-async def leaderboard(ctx): # وهنا غيرنا اسم الدالة عشان ما تتصادم مع القديمة
+    @bot.command(name="top10")
+async def leaderboard(ctx):
+    try:
+        # ترتيب الأعضاء (تأكد من اسم المتغير عندك)
+        rankings = sorted(levels.items(), key=lambda x: x[1]['xp'], reverse=True)
+        embed = discord.Embed(title="🏆 قائمة توب 10 المتفاعلين", color=discord.Color.gold())
+        count = 1
+        for user_id, data in rankings[:10]:
+            try:
+                user = await bot.fetch_user(int(user_id))
+                user_name = user.name
+            except:
+                user_name = "عضو غادر"
+            embed.add_field(name=f"#{count} | {user_name}", value=f"اللفل: `{data['level']}` | XP: `{data['xp']}`", inline=False)
+            count += 1
+        await ctx.send(embed=embed)
+    except Exception as e:
+        await ctx.send(f"في مشكلة في البيانات: {e}")
 
+# تأكد أن السطر اللي تحت هو آخر سطر في الملف وبدون أي مسافات قبله
 bot.run(TOKEN)
