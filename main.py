@@ -1,136 +1,151 @@
-import os
-import json
-import random
 import discord
 from discord.ext import commands
+import json
+import os
 
-# إعدادات البوت والتوكن
-TOKEN = os.environ.get('DISCORD_TOKEN')
-
+# --- إعدادات البوت ---
 intents = discord.Intents.default()
 intents.message_content = True
-intents.members = True
+intents.members = True # ضروري جداً للترحيب والرتب
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 
-XP_FILE = 'xp_data.json'
-LINE_URL = "https://cdn.discordapp.com/attachments/1458508427054813245/1459190184200503387/image.png"
+# --- نظام حفظ البيانات ---
+DATA_FILE = "toon_stats.json"
 
-# --- دالات النظام ---
-def load_xp():
-    if os.path.exists(XP_FILE):
-        with open(XP_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
     return {}
 
-def save_xp(data):
-    with open(XP_FILE, 'w', encoding='utf-8') as f: json.dump(data, f, indent=2)
+def save_data(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=4)
 
-def xp_progress(total_xp):
-    level = 0
-    xp = total_xp
-    def xp_for_next_level(l): return 5 * (l ** 2) + 50 * l + 100
-    while xp >= xp_for_next_level(level):
-        xp -= xp_for_next_level(level)
-        level += 1
-    needed = xp_for_next_level(level)
-    return level, xp, needed
+user_data = load_data()
 
-def level_color(level):
-    if level < 5:    return 0xFFFFFF
-    elif level < 15: return 0xA9A9A9
-    else:            return 0x111111
+# --- الإعدادات (الآيديات) ---
+HOST_CHANNEL_ID = 1450459023617949747
+GAME_ROLE_ID = 1450818743251894472
+WELCOME_CHANNEL_ID = 1450798372100243517
+GOODBYE_CHANNEL_ID = 1450799020556554240
 
-def level_rank_title(level):
-    if level < 5:    return '⬜ مبتدئ'
-    elif level < 15: return '🩶 محترف'
-    else:            return '⬛ أسطوري'
+# جدول الرتب المتفق عليه
+LEVEL_ROLES = {
+    1: 1483227597801521316,
+    4: 1483227645016674384,
+    6: 1483227734728773784,
+    8: 1483227747563081841,
+    9: 1483227757981859950,
+    12: 1483227765669888092,
+    14: 1483227776638255307,
+    16: 1483227784737460225,
+    20: 1483227826718249031
+}
 
-# --- الأحداث (Events) ---
-@bot.event
-async def on_ready():
-    print(f'✅ {bot.user} شغال و مروّق!')
+# --- حسبة اللفل المتدرجة (Scaling) ---
+def calculate_level(score):
+    if score <= 12: # من لفل 0 لـ 6 (كل 2 هوست لفل)
+        return score // 2
+    elif score <= 24: # من لفل 7 لـ 10 (تحتاج 3 هوستات)
+        return 6 + (score - 12) // 3
+    elif score <= 44: # من لفل 11 لـ 15 (تحتاج 4 هوستات)
+        return 10 + (score - 24) // 4
+    else: # لفل 16 وفوق (تحتاج 5 هوستات)
+        return 15 + (score - 44) // 5
 
+# --- نظام الترحيب (نسخة ميمو) ---
 @bot.event
 async def on_member_join(member):
-    channel = discord.utils.get(member.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
+    channel = bot.get_channel(WELCOME_CHANNEL_ID)
     if channel:
-        notice = f"Welcome {member.mention}! 🤍"
-        msg = f"𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 ୭ ˚. ᵎᵎ𝐁𝐀𝐒𝐒𝐈𝐄 𝐖𝐎𝐑𝐋𝐃\nEnjoy your stay!! ✨"
-        embed = discord.Embed(description=msg, color=0xf5c2d8)
-        embed.set_image(url="https://cdn.discordapp.com/attachments/1458508427054813245/1458521031357628632/Untitled24_20260102213614.png")
-        await channel.send(content=notice, embed=embed)
+        embed = discord.Embed(
+            title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊",
+            description=f"⊹ ˖ \n ⚔️ . . welcome {member.mention} ! \n 🌸 ||| \n\n 🦋 𓋼 ᵎ 𓂃 <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹",
+            color=0xffc0cb
+        )
+        embed.set_image(url="https://i.ibb.co/LkhmG8M/welcome-image.png")
+        embed.set_footer(text="Enjoy your stay here!!")
+        await channel.send(content=f"welcome {member.mention} !", embed=embed)
 
+# --- نظام التوديع (نسخة ميمو) ---
+@bot.event
+async def on_member_remove(member):
+    channel = bot.get_channel(GOODBYE_CHANNEL_ID)
+    if channel:
+        embed = discord.Embed(
+            description=f"(,,>_<,,)\n**{member.name} has left ;⊱**\n**BASSIE WORLD 🪷 ໒꒱ ; !!**\n((ಡ_ಡ)/ 🌸 * . . goodbye\n{member.mention}\n🔮 ᵲ ◞ we're sad to see you go !\n\n ◞ if you choose to return, you are always welcome. ‼️\n---------- ςορ ----------",
+            color=0x2f3136
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        await channel.send(content=f"goodbye {member.mention} !", embed=embed)
+
+# --- نظام الهوست رن (رصد اللفل والرتب) ---
 @bot.event
 async def on_message(message):
-    if message.author.bot: return
-    if message.content == '.': await message.channel.send('مياو')
+    if message.channel.id == HOST_CHANNEL_ID and not message.author.bot:
+        # فلترة: استبعاد @game والبوتات والمكرر
+        players = list(set([m for m in message.mentions if not m.bot and m.id != GAME_ROLE_ID]))
+        
+        for player in players:
+            uid = str(player.id)
+            old_score = user_data.get(uid, 0)
+            new_score = old_score + 1
+            user_data[uid] = new_score
+            
+            old_lvl = calculate_level(old_score)
+            new_lvl = calculate_level(new_score)
+            
+            if new_lvl > old_lvl:
+                # رسالة اللفل أب (بينك + صورة الزهور)
+                embed = discord.Embed(title="LEVEL UP! 🌸", color=0xffc0cb)
+                embed.set_image(url="https://i.ibb.co/aec358ce/flower-image.gif")
+                await message.channel.send(content=f"🎊 {player.mention} ارتفع مستواك!", embed=embed)
+                
+                # تحديث الرتبة (حذف القديم وإضافة الجديد)
+                if new_lvl in LEVEL_ROLES:
+                    new_role = message.guild.get_role(LEVEL_ROLES[new_lvl])
+                    if new_role:
+                        for lvl, rid in LEVEL_ROLES.items():
+                            role_to_remove = message.guild.get_role(rid)
+                            if role_to_remove and role_to_remove in player.roles:
+                                await player.remove_roles(role_to_remove)
+                        await player.add_roles(new_role)
 
-    data = load_xp()
-    u_id = str(message.author.id)
-    if u_id not in data: data[u_id] = {'xp': 0, 'total_xp': 0}
-    
-    old_lvl, _, _ = xp_progress(data[u_id]['total_xp'])
-    data[u_id]['total_xp'] += random.randint(15, 25)
-    new_lvl, _, _ = xp_progress(data[u_id]['total_xp'])
-    save_xp(data)
+        save_data(user_data)
+        if players: await message.add_reaction("⭐")
 
-    if new_lvl > old_lvl:
-        lvl_channel = discord.utils.get(message.guild.text_channels, name='·𓈒⟡⌇المستوى⋆₊˚⋆') or message.channel
-        # الرسالة باللهجة العامية اللي طلبتيها
-        embed = discord.Embed(
-            title="🎉 لفل جديد!",
-            description=f"ماشاءالله {message.author.mention} شاد حيلك اليوم! وصلت لفل (**{new_lvl}**) استمر نبي نشوفك دايم بالتوب ! ❤️",
-            color=level_color(new_lvl)
-        )
-        embed.set_thumbnail(url=message.author.display_avatar.url)
-        await lvl_channel.send(content=f"{message.author.mention} ترقيت!", embed=embed)
-    
     await bot.process_commands(message)
 
-# --- الأوامر (Commands) ---
-@bot.command(name='L', aliases=['l'])
-async def send_line(ctx):
-    await ctx.send(LINE_URL)
-
-@bot.command(name='rank', aliases=['r'])
-async def rank(ctx, member: discord.Member = None):
+# --- الأوامر (بالاختصارات) ---
+@bot.command(aliases=['tr', 'TR', 'Toonrank'])
+async def toonrank(ctx, member: discord.Member = None):
     member = member or ctx.author
-    data = load_xp()
-    u_id = str(member.id)
-    if u_id not in data: return await ctx.send("لا توجد بيانات لهذا العضو.")
-
-    lvl, curr, need = xp_progress(data[u_id]['total_xp'])
-    percent = curr / need
-    bar = '━' * int(percent * 12) + '○' + '╌' * (12 - int(percent * 12))
+    score = user_data.get(str(member.id), 0)
+    level = calculate_level(score)
     
-    sorted_users = sorted(data.items(), key=lambda x: x[1]['total_xp'], reverse=True)
-    pos = next((i+1 for i, (uid, _) in enumerate(sorted_users) if uid == u_id), '?')
-
-    embed = discord.Embed(description=f"## {member.display_name}\n{level_rank_title(lvl)}", color=level_color(lvl))
-    embed.add_field(name='level', value=f'**{lvl}**', inline=True)
-    embed.add_field(name='total XP', value=f'**{data[u_id]["total_xp"]}**', inline=True)
-    embed.add_field(name='ترتيبك بالسيرفر', value=f'**#{pos}**', inline=True)
-    
-    embed.add_field(
-        name=f'لفلك سيكون {lvl + 1}',
-        value=f'`{bar}`\nيبي لك **{need - curr}** اكس بي عشان تصير اللفل {lvl + 1}! شد حيلك🤍',
-        inline=False
-    )
+    embed = discord.Embed(title="🎮 Toon Profile", color=0xffc0cb)
     embed.set_thumbnail(url=member.display_avatar.url)
-    embed.set_footer(text=f"طلب بواسطة {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+    embed.add_field(name="الاسم", value=member.mention, inline=False)
+    embed.add_field(name="🔥 الهوستات", value=f"**{score}**", inline=True)
+    embed.add_field(name="🏆 المستوى", value=f"**Lvl {level}**", inline=True)
     await ctx.send(embed=embed)
 
-@bot.command(name="showtop", aliases=['top'])
-async def show_leaderboard_rank(ctx):
-    data = load_xp()
-    if not data: return await ctx.send("القائمة فارغة حالياً.")
-    rankings = sorted(data.items(), key=lambda x: x[1]['total_xp'], reverse=True)[:10]
-    embed = discord.Embed(title="🏆 قائمة توب 10 المتفاعلين", color=0xFFD700)
-    for i, (u_id, u_data) in enumerate(rankings, 1):
-        try: user = await bot.fetch_user(int(u_id)); name = user.name
-        except: name = "عضو غادر"
-        lvl, _, _ = xp_progress(u_data['total_xp'])
-        embed.add_field(name=f"#{i} | {name}", value=f"اللفل: `{lvl}` | XP: `{u_data['total_xp']}`", inline=False)
+@bot.command(aliases=['tt', 'TT', 'Toptoons'])
+async def toptoons(ctx):
+    sorted_data = sorted(user_data.items(), key=lambda x: x[1], reverse=True)[:10]
+    desc = ""
+    for i, (uid, sc) in enumerate(sorted_data, 1):
+        lvl = calculate_level(sc)
+        desc += f"**#{i}** <@{uid}> — `Lvl {lvl}` ({sc} هوست)\n"
+
+    embed = discord.Embed(title="🏆 قائمة أساطير الهوست", description=desc or "القائمة فارغة", color=0xffc0cb)
     await ctx.send(embed=embed)
 
-bot.run(TOKEN)
+# --- التشغيل الآمن ---
+token = os.getenv('TOKEN')
+if token:
+    bot.run(token)
+else:
+    print("خطأ: لم يتم العثور على TOKEN في إعدادات الموقع!")
