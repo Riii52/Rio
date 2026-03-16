@@ -78,7 +78,7 @@ async def on_message(msg):
     save_data(data)
     await bot.process_commands(msg)
 
-@bot.command(name='Toonrank', aliases=['tr', 'TR'])
+@bot.command(name='Toonrank', aliases=['tr', 'Tr!'])
 async def toonrank(ctx, m: discord.Member = None):
     m = m or ctx.author
     d = load_data().get(str(m.id), {'runs': 0})
