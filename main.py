@@ -347,5 +347,7 @@ async def top(ctx):
     embed.set_footer(text=f"طلب بواسطة {ctx.author.name}", icon_url=ctx.author.avatar.url)
     
     await ctx.send(embed=embed)
+@bot.command(name="top10") # هنا سمينا الأمر top10
+async def leaderboard(ctx): # وهنا غيرنا اسم الدالة عشان ما تتصادم مع القديمة
 
 bot.run(TOKEN)
