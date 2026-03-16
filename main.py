@@ -107,7 +107,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # --- 6. الأوامر ---
-@bot.command(aliases=['tr', 'TR'])
+@bot.command(aliases=['tr', 'Tr'])
 async def toonrank(ctx, member: discord.Member = None):
     member = member or ctx.author
     score = user_data.get(str(member.id), 0)
