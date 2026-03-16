@@ -318,9 +318,8 @@ async def send_ticket(ctx):
     @bot.command(name="top10")
 async def leaderboard(ctx):
     try:
-        # ترتيب الأعضاء (تأكد من اسم المتغير عندك)
         rankings = sorted(levels.items(), key=lambda x: x[1]['xp'], reverse=True)
-        embed = discord.Embed(title="🏆 قائمة توب 10 المتفاعلين", color=discord.Color.gold())
+        embed = discord.Embed(title="🏆 قائمة توب 10", color=discord.Color.gold())
         count = 1
         for user_id, data in rankings[:10]:
             try:
@@ -328,11 +327,10 @@ async def leaderboard(ctx):
                 user_name = user.name
             except:
                 user_name = "عضو غادر"
-            embed.add_field(name=f"#{count} | {user_name}", value=f"اللفل: `{data['level']}` | XP: `{data['xp']}`", inline=False)
+            embed.add_field(name=f"#{count} | {user_name}", value=f"اللفل: {data['level']}", inline=False)
             count += 1
         await ctx.send(embed=embed)
     except Exception as e:
-        await ctx.send(f"في مشكلة في البيانات: {e}")
+        await ctx.send(f"خطأ: {e}")
 
-# تأكد أن السطر اللي تحت هو آخر سطر في الملف وبدون أي مسافات قبله
 bot.run(TOKEN)
