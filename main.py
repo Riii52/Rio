@@ -42,7 +42,7 @@ async def on_ready(): print(f'Logged in as {bot.user}')
 async def on_member_join(m):
     ch = discord.utils.get(m.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
     if ch:
-        emb = discord.Embed(title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊", description=f"⊹ ˖ \n ⚔️ . . welcome {m.mention} ! \n 🌸 ||| \n\n <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹", color=0xffffff)
+        emb = discord.Embed(title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊", description=f"⊹ ˖ \n ⚔️ . . welcome {m.mention} ! \n 🌸 ||| \n\n <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹", color=FFD9E4)
         emb.set_image(url="https://i.ibb.co/LkhmG8M/welcome-image.png")
         await ch.send(content=f"welcome {m.mention} !", embed=emb)
         await ch.send(LINE_URL)
