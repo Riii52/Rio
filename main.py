@@ -42,7 +42,7 @@ async def on_ready(): print(f'Logged in as {bot.user}')
 async def on_member_join(m):
     ch = discord.utils.get(m.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
     if ch:
-        emb = discord.Embed(title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊", description=f"⊹ ˖ \n ⚔️ . . welcome {m.mention} ! \n 🌸 ||| \n\n <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹", color=0xffc0cb)
+        emb = discord.Embed(title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊", description=f"⊹ ˖ \n ⚔️ . . welcome {m.mention} ! \n 🌸 ||| \n\n <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹", color=0xffffff)
         emb.set_image(url="https://i.ibb.co/LkhmG8M/welcome-image.png")
         await ch.send(content=f"welcome {m.mention} !", embed=emb)
         await ch.send(LINE_URL)
@@ -51,7 +51,7 @@ async def on_member_join(m):
 async def on_member_remove(m):
     ch = discord.utils.get(m.guild.text_channels, name='ᥫ᭡₊⊹الوداع✦˚೯⁺')
     if ch:
-        emb = discord.Embed(description=f"(,,>_<,,)\n**{m.name} has left ;⊱**\n**BASSIE WORLD 🪷 ໒꒱ ; !!**\n((ಡ_ಡ)/ 🌸 * . . goodbye\n{m.mention}\n🔮 ᵲ ◞ we're sad to see you go !", color=0x2f3136)
+        emb = discord.Embed(description=f"(,,>_<,,)\n**{m.name} has left ;⊱**\n**BASSIE WORLD 🪷 ໒꒱ ; !!**\n((ಡ_ಡ)/ 🌸 * . . goodbye\n{m.mention}\n🔮 ᵲ ◞ we're sad to see you go !", color=0xffffff)
         emb.set_thumbnail(url=m.display_avatar.url)
         await ch.send(embed=emb)
 
@@ -99,7 +99,7 @@ async def rank(ctx, m: discord.Member = None):
     lvl, cur_xp, n_xp = xp_lvl_info(d['xp'])
     sorted_xp = sorted(data.items(), key=lambda x: x[1].get('xp', 0), reverse=True)
     rank_pos = next(i for i, (uid, _) in enumerate(sorted_xp, 1) if uid == str(m.id))
-    e = discord.Embed(title=m.name, description=f"level\n{lvl}\ntotal XP\n{d['xp']}\n\nترتيبك بالسيرفر\n#{rank_pos}\n\nلفلك سيكون {lvl+1}\nيبي لك {n_xp-cur_xp} اكس بي عشان تصير اللفل {lvl+1}!\nشد حيلك🤍", color=0xffc0cb)
+    e = discord.Embed(title=m.name, description=f"level\n{lvl}\ntotal XP\n{d['xp']}\n\nترتيبك بالسيرفر\n#{rank_pos}\n\nلفلك سيكون {lvl+1}\nيبي لك {n_xp-cur_xp} اكس بي عشان تصير اللفل {lvl+1}!\nشد حيلك🤍", color=0xffffff)
     e.set_thumbnail(url=m.display_avatar.url)
     e.set_footer(text=f"طلب بواسطة {ctx.author.display_name}")
     await ctx.send(embed=e)
