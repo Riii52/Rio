@@ -89,7 +89,7 @@ async def on_message(msg):
     save_data(data)
     await bot.process_commands(msg)
 
-@bot.command(name='rank', aliases=['r', 'R'])
+@bot.command(name='rank', aliases=['r', 'R!'])
 async def rank(ctx, m: discord.Member = None):
     m = m or ctx.author
     data = load_data()
