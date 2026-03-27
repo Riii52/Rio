@@ -38,21 +38,22 @@ def xp_lvl_info(txp):
 @bot.event
 async def on_ready(): print(f'Logged in as {bot.user}')
 
-@bot.event
+@@bot.event
 async def on_member_join(member):
     channel = discord.utils.get(member.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
     if channel:
         notice = f"Welcome {member.mention}! 🤍"
-        msg = f"𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 ୭ ˚. ᵎᵎ𝐁𝐀𝐒𝐒𝐈𝐄 𝐖𝐎𝐑𝐋𝐃 Ꮺ ָ࣪ ۰ ͙⊹
-𓏵۪۪　﹒　welcome　{user}　<:Hi:1458708778257092742> 𓏼
+        msg = f"""𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 ୭ ˚. ᵎᵎ𝐁𝐀𝐒𝐒𝐈𝐄 𝐖𝐎𝐑𝐋𝐃 Ꮺ ָ࣪ ۰ ͙⊹
+𓏵۪۪　﹒　welcome　{member.mention}　<:Hi:1458708778257092742> 𓏼
 
 <:Green_butterfly:1457032840867745813>  ۪۫۫𓏫　⌣　<#1450537026045870287>　﹕
 
-　<#1450803745675022429>　𓈒　 ͝ །⠀"
+　<#1450803745675022429>　𓈒　 ͝ །⠀"""
+        
         embed = discord.Embed(description=msg, color=0xf5c2d8)
         embed.set_image(url="https://cdn.discordapp.com/attachments/1456666896563965993/1487072872236187779/Untitled24_20260102213614.png?ex=69c7d009&is=69c67e89&hm=99541b14006c613c67316b78694dd94ca99dca6484fb9161db59a90db3023e0d&")
         await channel.send(content=notice, embed=embed)
-
+        
 
 @bot.event
 async def on_member_remove(m):
