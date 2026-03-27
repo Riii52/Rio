@@ -39,19 +39,15 @@ def xp_lvl_info(txp):
 async def on_ready(): print(f'Logged in as {bot.user}')
 
 @bot.event
-async def on_member_join(m):
-    ch = discord.utils.get(m.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
-    if ch:
-        # المنشن برا الإيمبد (زي الصورة)
-        content = f"welcome {m.mention} !"
-        # وردي غامق هادي (E5A9B8) للولكم
-        emb = discord.Embed(title="Welcome to ໑ °. !!BASSIE WORLD Ꮺ ˚₊", 
-                            description=f"⊹ ˖ \n ⚔️ . . welcome {m.mention} ! \n 🌸 ||| \n\n <#1450798372100243517> 🎟️ \n\n <#1450459023617949747> 🧾 . . 🏹", 
-                            color=0xE5A9B8)
-        emb.set_image(url="https://i.ibb.co/LkhmG8M/welcome-image.png")
-        emb.set_footer(text="Enjoy your stay here!!")
-        await ch.send(content=content, embed=emb)
-        await ch.send(LINE_URL)
+async def on_member_join(member):
+    channel = discord.utils.get(member.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
+    if channel:
+        notice = f"Welcome {member.mention}! 🤍"
+        msg = f"𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐭𝐨 ୭ ˚. ᵎᵎ𝐁𝐀𝐒𝐒𝐈𝐄 𝐖𝐎𝐑𝐋𝐃\nEnjoy your stay!! ✨"
+        embed = discord.Embed(description=msg, color=0xf5c2d8)
+        embed.set_image(url="https://cdn.discordapp.com/attachments/1456666896563965993/1487072872236187779/Untitled24_20260102213614.png?ex=69c7d009&is=69c67e89&hm=99541b14006c613c67316b78694dd94ca99dca6484fb9161db59a90db3023e0d&")
+        await channel.send(content=notice, embed=embed)
+
 
 @bot.event
 async def on_member_remove(m):
