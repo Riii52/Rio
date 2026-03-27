@@ -38,7 +38,7 @@ def xp_lvl_info(txp):
 @bot.event
 async def on_ready(): print(f'Logged in as {bot.user}')
 
-@@bot.event
+@bot.event
 async def on_member_join(member):
     channel = discord.utils.get(member.guild.text_channels, name='ᥫ᭡₊⊹الترحيب✦˚೯⁺')
     if channel:
