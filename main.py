@@ -53,7 +53,8 @@ async def on_member_join(member):
         embed = discord.Embed(description=msg, color=0xf5c2d8)
         embed.set_image(url="https://cdn.discordapp.com/attachments/1456666896563965993/1487072872236187779/Untitled24_20260102213614.png?ex=69c7d009&is=69c67e89&hm=99541b14006c613c67316b78694dd94ca99dca6484fb9161db59a90db3023e0d&")
         await channel.send(content=notice, embed=embed)
-        
+
+
 
 @bot.event
 async def on_member_remove(m):
